@@ -15,8 +15,7 @@ These were the following projects:
 3b. Part 2 - Simulate a time-sharing system by using signals and timers. The scheduler is installed with an interval timer. The timer starts ticking when the scheduler picks a thread to use the CPU which in turn signals the thread when its time slice is finished thus allowing the scheduler to pick another thread and so on. When a thread has completely finished its work it leaves the scheduler to allow a waiting thread to enter.
 
 4a. Part 2 - Implement routines for allocating and deallocating memory, and keeping track of
-what memory is in use and implement four strategies for selecting in
-which block to place a new requested memory black:
+what memory is in use and implement four strategies for selecting in which block to place a new requested memory block:
 
     1) First-fit: select the first suitable block with smallest address.
     2) Best-fit: select the smallest suitable block.
