@@ -20,6 +20,4 @@ what memory is in use and implement four strategies for selecting in which block
     1) First-fit: select the first suitable block with smallest address.
     2) Best-fit: select the smallest suitable block.
     3) Worst-fit: select the largest suitable block.
-    4) Next-fit: select the first suitable block after
-     the last block allocated (with wraparound
-     from end to beginning).
+    4) Next-fit: select the first suitable block after the last block allocated (with wraparound from end to beginning).
