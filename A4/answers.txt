@@ -1,0 +1,78 @@
+//Answers.txt for Sage Clouston (301346228) and Aditya Rajvanshi (301349754)
+
+1) Why is it so important that adjacent free blocks not be left as such?  What would happen if they were permitted?
+
+Answer:	It is important because it may lead to unsuccessful allocations due to space constraint despite there actually being enough space.
+For example, two adjacent blocks of free space might be 20 bytes and 10 bytes and we attempt to allocate 30 bytes of memory in that region.
+The allocation would fail because memoryList will not recognise the 30 byte block. 
+
+
+2) Which function(s) need to be concerned about adjacent free blocks? 
+
+Answer:
+mymalloc() - adjacent free blocks need to be considered as one block for the above reason
+myfree() - When memory is freed, we need to make sure not to create two seperate blocks of memory
+mem_holes() - When finding free blocks in memory, need to make sure adjacent blocks count as one.
+ 
+
+3) Name one advantage of each strategy.
+
+Answer:
+First fit - Minimizes amount of searching so it is the fastest algorithm
+Best fit - Good utilization of memory space since it searches for the smallest free space
+Worst fit - The amount of small gaps being created is reduced
+Next fit - Similar to first fit, but continuous searching from where it left off, rather than starting from the beginning as in First fit
+ 
+
+4) Run the stress test on all strategies, and look at the results (tests.out). 
+What is the significance of "Average largest free block"?  Which strategy generally has the best performance in this metric?  
+Why do you think this is? 
+
+Answer: This shows us the most common size of a block of free space. The best fit algorithm always attempts to utilize smaller blocks of free space
+rather than spliting into the largest block. Therefore, we believe that the best fit algorithm performs the best in this metric.
+
+ 
+5) In the stress test results (see Question 4), what is the significance of "Average number of small blocks"?  
+Which strategy generally has the best performance in this metric?  Why do you think this is? 
+
+Answer: A high average number of small blocks shows high fragmentation. This is NOT what we want. The algorithm that has the smallest number of 
+small blocks is the worst fit algorithm. This is because it breaks into larger blocks, and leaving the smaller blocks alone. This results in 
+a higher number of medium sized blocks.
+
+
+6) Eventually, the many mallocs and frees produces many small blocks scattered across the memory pool.  
+There may be enough space to allocate a new block, but not in one place.  
+It is possible to compact the memory, so all the free blocks are moved to one large free block.  
+How would you implement this in the system you have built? 
+
+Answer: A simple way to do this is to sum up the small blocks of free space and then add it to the front of the memory pool whilst removing the 
+spaces in between. This could be incorporated into myfree() so that every time space is deallocated, it adds to a counting sum which is 
+added to the front upon some function call.
+ 
+
+7) If you did implement memory compaction, what changes would you need to make in how such a system is invoked 
+(i.e. from a user's perspective)? 
+
+Answer: We would provide the user with the option to enable memory compaction. Since memory compaction would take extra time, we allow
+the user to decide whether why want to invoke it. This can be done through an extra function and potentially a flag in the console commands
+
+
+8) How would you use the system you have built to implement realloc?  (Brief explanation; no code) 
+
+Answer: First, check the if there is enough additional free space around the block that we want to realloc. If there is, then expand
+the block into the free space. If not, search through the memory pool for enough combined space for the realloc. If there is enough
+continous free space, unallocate the block and reallocate at the end, where the free space is.
+
+
+9) Which function(s) need to know which strategy is being used?  Briefly explain why this/these and not others. 
+
+Answer: Only mymalloc() would need to know which strategy is being used because it is the only function whose behaviour changes based on
+the strategy. The other functions simply do whatever mymalloc() calls for.
+
+
+10) Give one advantage of implementing memory management using a linked list over a bit array, 
+where every bit tells whether its corresponding byte is allocated. 
+
+Answer: Arrays are static data structures and are not dynamic like linked lists, which allow the buffer size to be increased during 
+memory allocation and deallocation for blocks.
+

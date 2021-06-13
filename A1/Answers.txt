@@ -1,0 +1,100 @@
+Answers.txt
+
+Part 1
+1 - Pointers:
+
+1.The code is incorrect since argv[0] is copying the location of temp, which is not initialised yet.
+
+2. Every string has a null character to signal the end of the string. In 9 character long strings, the null character is technically the 10th character. 
+So when copying a 9 character long string into an array of length 9, the null character is copied to the 10th position of the array, which has not been allocated yet.
+This results in a buffer overflow.
+
+3. This crashes because the pointer is being assigned to the address of "Hello", instead of "Hello" being set to the buffer's value. So there isn't enough space when it is initialised. 
+
+4. This is correct. The function copies the string "World" with the null character at the end, into array b. A simpler expression for &b[0] is simply b. E.G. char *buffer = b.
+
+5. > program1 5 abc
+
+6.This does not work because buffer is a local variable, so it's address cannot be returned after the function ends because it will be destroyed.
+
+
+2-Debugging:
+
+1. When strcmp() has two of the same strings, then it outputs a 0. But in an if statement, 0 is false and 1 is true. 
+So the "!" operator is a NOT in C, and flips the output of the strcmp() function. 
+EG. if (!strcmp(entries[i].word, buffer))" (main.c, line 50) this means that if two strings are the same, the output 0 is reveresed to a 1, then continue with the code, i.e. entries[i].counter++; 
+However if two strings are not the same, the output is 1, flipped to a 0 and then the if statement logic is skipped.
+Additionally, in line 83, the "!" operator means that if argc is greater than 1 and index 1 of array argv is NOT "-test", then continue the if logic execution. 
+
+2. "LENGTH" is defined to be (sizeof(s) / sizeof(*s)). The function sizeof(s) returns the size in memory of s, 
+for example if s is an int then sizeof(s) = 4 since int takes 4 bytes of memory. When a pointer is used instead, eg. sizeof(*s) then the function returns the size of the pointer. 
+LENGTH(entries) (line 99) works by calculating the total size of the entire array of char and int, since entries is a WordCountEntry data structure, 
+and dividing it by the total size of the pointer to the array of entries (the first value), to return the length of it. 
+EG. An array of length 4 would return --> 24/6 because one entry in entries[] array has an int (size 4) and a char (size 2, the character + null) 
+
+3. When -h is used, then the program ouputs the result of the print_result function, however it also assumes -h is a word that is being searched for so it executes the rest of the program.
+A return EXIT_SUCCESS and a break were required to fix the logical flow bug within the switch statement.
+
+4. entryCount is never zero because it is always incremented at least once even when no arguments are given. It is  counting ./main as an argument. 
+The solution to this is to increment argv after the testrunner if statement ends.
+
+5. The result was only printing the first string, and it's count. This is because the while loop was not iterating, and also the condition for the while loop was incorrect. 
+I changed it to i < entry_count so that it iterates through each entry. This meant that I needed to introduce a looper variable i, to iterate. 
+I also changed the method to access the entries word and counter values.
+
+
+
+
+Part 2
+README Step 4:
+
+1.The 'cd' command is built into the shell this is because it is important that the cd command does not create an external child to change the directory. 
+If it did, then after the cd process had been completed, control would return to the parent directory and it would be impossible to change directories.
+
+2. Our shell checks the input first to see if the "cd" command has been entered. If it has, then it checks to make sure there is a second argument. 
+If not then the 'cd' command fails and returns to the first argument, otherwise it performs chdir() on the input argument
+
+3. An execv call loads a new program into the process and replaces the current running program with the one that has a given path to the program and an argument array as in the function call --> execv(path, argv[]). 
+The program will be loaded and executed. The fork() function creates a new process, whereas execv replaces processes so no new process will be created.
+
+4. If fork() returns a value less than zero, the function has failed and no child was successfully created.
+If fork() returns a zero, then a zero is given to the newly created child process.
+If fork() returns a value greater than zero, then the parent receives the pid of the child process.
+
+5. If the fork() were called prior to chdir(), a new child process is created. Then this forked child processes calls chdir(), 
+if that fails then there is an error and the program will exit, but if it is a success, it will change the directory for the child only not the parent. 
+This is because it is being called in the forked child, which is completed and then returns to the parent. Effectively, the directory is not changed.
+
+6. Yes we can run multiple versions of the countdown script in the background. Their output will begin to overlap. For example:
+10(4198)..6(4192)..9(4198)..5(4192)..8(4198)..4(4192)..7(4198)..3(4192)..6(4198)..2(4192)..5(4198)..1(4192)..4(4198)..Blastoff 4192 Complete
+3(4198)..2(4198)..1(4198)..Blastoff 4198 Complete
+
+7. Yes you can execute multiple instances of our shell from within our shell program. The one receiving the input would be the latest instantiation. 
+In other words, the shell within the shell within ... the shell will receive the input.
+
+8. If we type CTRL-C while the countdown script is running, the script will exit and the process kills itself. 
+This is also the case when the countdown script is running in the background.
+
+9. Yes it is possible for a shell to kill itself and for a shell within a shell to kill the parent.
+
+10. The background processes continue to run even after exiting from shell. 
+When exit is entered, the parent process ends and exits, however the background process (the child) continues to run. They are visible with the 'ps' command.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

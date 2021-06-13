@@ -1,0 +1,77 @@
+A3 CMPT 300 
+Aditya Rajvanshi
+301349754
+
+Part 1 Answers:
+Q1. C does not have an inherent class system, so using structs allows for member function behaviour. 
+    It also means that modifying functions is much easier. A structure function pointer does not change when other functions are added.
+    I would use this approach to abstract functions for example choosing which function to swap, we can pass in the one we want in a general function swapper.
+    However, it is more taxing to use this method because function pointers must also be stored. 
+    It also makes code harder to read because it can be difficult to tell which version of the function is being used.
+    If memory space is a big concern, then I would not use function pointers.
+
+Q2. For synchronization I used the following semaphores:
+    threadCon - Used to control the number of threads in a queue at any given time
+    mutex - This is a semaphore that behaves as a mutex, only allowing 1 thread to use the CPU at any given time
+    emptySem - This semaphore is used to make sure the queue is not empty.
+    sem - Semaphore that allows the worker thread to run or not
+
+Q3. The dummy scheduling implementation allows for the input of negative number of threads which means that a negative amount of memory will be attempted to be allocated.
+    This leads to invalid memory references. Also, there is no limit on the number for threads that can be created. 
+    I resolve this by not letting the program run if the queue size input and thread count inputs are equal to or less than 0.
+
+Q4. No this will not happen because the program will run till the threads are completed entirely. 
+    There is no counter for the number of threads in this algorithm so there is no way for it to miss any threads.
+
+Q5. These variables are declared extern so that they are usable in other files. 
+    If they were not declared this way, the compiler would view these variables as separate variables so changes to the variables in one file would not affect the variable in the other file.
+    We would also be unable to access these variables from other files.
+
+Q6. This function outputs the failed function calls and does not use an errno since the error is not received from the system but a user function. 
+    That is why we must get the error on a user level.
+
+Q7. The wait_for_queue does not have to undergo anything in order for the program to give the valid output. However, if we did not have this function, the performance would be impacted because the dispatcher would stuck in a busy-waiting loop until an item enters the queue. A thread would occupy resources even when it is not doing anything and this would make performance worse.
+
+Q8. The program first parses the user input and finds the scheduling policy. 
+    Then, the policy gets pointed to by the sched pointer, allowing the correct policy functions to be used. 
+    The position of the function pointers in definition of the scheduling pointers allows the same name to be used even though there is no function of the name next_worker.
+    This happens because next_worker is the name of the function pointer and can point to any function with the same input and return type as it was declared to have.
+
+Q9. No, because the scheduler will always wake it as long as it is in the queue.
+
+
+Q10. The modifications I would make would be to have worker threads of varying lengths that run for a set amount of cycles. 
+     After this time, I would check for the number of workers that have completed and if the longest workers were the first in the queue,
+     then less workers would have completed in the time frame using fifo rather than rr since the shorter fifo workers would need to wait for the longer workers to complete.
+  
+     The benefits of round robin are tough to show since the workers are hard to tell apart so there is no real change in the number of completed processes by the end of a fixed time, as compared to fifo.
+
+Part 2 Answers:
+Q1. This configuration of signal blocking means that the correct threads are acting on the correct signals. 
+    SIGUSR2 and SIGALRM are blocked in the worker to prevent the worker from acting on those signals. 
+    Similarly, SIGUSR2 and SIGTERM are unblocked in the scheduler so that it can manage them.
+   
+Q2. sigaction() reconfigures a thread's response to a signal, while sigwait() suspends the thread until a specified signal.
+   
+Q3. The alternative would be to use an absolute clock, in that it would report its time relative to the real-world, 
+    physical time, instead of relative to a given or configured "starting time" for the relative timer.
+   
+Q4. When the scheduler kills the thread via SIGTERM.
+
+Q5. The scheduler finishes when all its worker threads have died.
+
+Q6. The scheduled thread remains in the queue until it is actually run. It gets moved to the back of the queue when the thread is suspended. 
+    It is removed from the queue when it has fully finished and is killed.
+
+Q7. This is so that workers are prevented from entering the queue when they should not. An example, during scheduling we take the head
+    and insert at the tail, we do not want a new worker to enter the queue during this process. This is because the former head has not
+    been removed from the queue but just changed positions. Also, semaphores are a good way to prevent too many workers from entering the queue.
+  
+Q8. The completed variable acts as a counter of completed threads. It is an essential state variable for keeping track 
+    of if there are still threads to be scheduled and run, or if the entire process is in a state that it can finish.
+   
+Q9. You could easily modify suspend_worker to not reposition threads upon suspension.
+
+Q10. A new set of signals could be configured to allow for the scheduler and worker to communicate and allow for arbitrary 
+     starting and stopping between quanta. This could be useful in a system that perhaps needed to maintain different priorities
+     of processes, perhaps determined by their user/owner.

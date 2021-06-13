@@ -1,0 +1,54 @@
+Part Two: Fixing the Bugs
+-------------------------
+
+Understanding the code
+
+  1) Explain why this program uses the exclamation operator with the
+     strcmp() function.
+
+  2) Explain why the 'LENGTH' macro returns the length of an array.
+     Would it work with a pointer to a dynamically allocated array? (Hint:
+     understand sizeof).
+
+Bug hunting
+
+  3) Explain and fix the logical flow bug within the switch statement.
+     (What happens when the -h option is used?)
+
+  4) Explain and fix the argument parsing error. (Why is entrycount never
+     zero?)
+
+  5) Fix print_result() to print results correctly and in the same order
+     as the words were specified on the command line.  Explain your solution.
+
+Answers:
+
+  1) When strcmp() has two of the same strings, then it outputs a 0. But in an if statement, 0 is false and 1 is true. So the "!" operator is a NOT in C, and flips the output of the strcmp() function. EG. if (!strcmp(entries[i].word, buffer))" (main.c, line 50) this means that if two strings are the same, the output 0 is reveresed to a 1, then continue with the code, i.e. entries[i].counter++; However if two strings are not the same, the output is 1, flipped to a 0 and then the if statement logic is skipped.
+  Additionally, in line 83, the "!" operator means that if argc is greater than 1 and index 1 of array argv is NOT "-test", then continue the if logic execution. 
+
+  2) "LENGTH" is defined to be (sizeof(s) / sizeof(*s)). The function sizeof(s) returns the size in memory of s, for example if s is an int then sizeof(s) = 4 since int takes 4 bytes of memory. When a pointer is used instead, eg. sizeof(*s) then the function returns the size of the pointer. 
+	LENGTH(entries) (line 99) works by calculating the total size of the entire array of char and int, since entries is a WordCountEntry data structure, and dividing it by the total size of the pointer to the array of entries (the first value), to return the length of it. EG. An array of length 4 would return --> 24/6 because one entry in entries[] array has an int (size 4) and a char (size 2, the character + null) 
+
+  3) When -h is used, then the program ouputs the result of the print_result function, however it also assumes -h is a word that is being searched for so it executes the rest of the program. A return EXIT_SUCCESS and a break were required to fix the logical flow bug within the switch statement.
+
+  4) entryCount is never zero because it is always incremented at least once even when no arguments are given. It is  counting ./main as an argument. The solution to this is to increment argv after the testrunner if statement ends.
+
+  5)The result was only printing the first string, and it's count. This is because the while loop was not iterating, and also the condition for the while loop was incorrect. I changed it to i < entry_count so that it iterates through each entry. This meant that I needed to introduce a looper variable i, to iterate. I also changed the method to access the entries word and counter values.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

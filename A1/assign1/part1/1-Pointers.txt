@@ -1,0 +1,96 @@
+Pointers in C
+-------------
+
+1) Consider the following C program.
+#include <string.h>
+int main(int argc, char *argv[])
+{
+  char *temp;
+  strcpy(temp, argv[0]);
+  return 0;
+}
+
+Why is the above code incorrect (i.e., likely to crash)?
+
+Answer:
+The code is incorrect since argv[0] is copying the location of temp, which is not initialised yet. 
+
+2) Consider the following C program.
+#include <string.h>
+int main(int argc, char *argv[])
+{
+  char temp[9];
+  strcpy(temp, argv[0]);
+  return 0;
+}
+
+A buffer overflow occurs when the program name is 9 characters long
+(e.g., "12345.exe"). Why?
+
+Answer:
+Every string has a null character to signal the end of the string. In 9 character long strings, the null character is technically the 10th character. So when copying a 9 character long string into an array of length 9, the null character is copied to the 10th position of the array, which has not been allocated yet.This results in a buffer overflow.
+
+3) Consider the following C program.
+#include <string.h>
+int main(int argc, char *argv[])
+{
+  char *buffer = "Hello";
+  strcpy(buffer, "World");
+  return 0;
+}
+
+Why does this program crash?
+
+Answer:
+This crashes because the pointer is being assigned to the address of "Hello", instead of "Hello" being set to the buffer's value. So there isn't enough space when it is initialised. 
+
+
+4) Consider the following C snippet.
+void myfunc()
+{
+  char b[100];
+  char *buffer = &b[0];
+  strcpy(buffer, "World");
+}
+
+Is this correct?  What's a simpler expression for &b[0]?
+
+Answer:
+This is correct. The function copies the string "World" with the null character at the end, into array b. A simpler expression for &b[0] is simply b. E.G. char *buffer = b.
+
+
+5) Consider the following C program.
+#include <stdio.h>
+int main(int argc, char* argv[])
+{
+  printf("%s %s %s\n", *argv, (*(argv+1)) + 2, *(argv+2));
+  return 0;
+}
+
+If this code is executed using the following line, what will be the output?
+> program1 -n5 abc
+
+Answer:
+> program1 5 abc
+
+6) Consider the following C program.
+#include <stdio.h>
+#include <string.h>
+char *myfunc(char **argv)
+{
+  char buffer[100];
+  strcpy(buffer, "hello");
+  return buffer;
+}
+int main(int argc, char *argv[])
+{
+  char *s = myfunc(argv);
+  printf("%s\n", s);
+}
+
+What's wrong with this?
+
+Answer:
+This does not work because buffer is a local variable, so it's address cannot be returned after the function ends because it will be destroyed.
+
+
